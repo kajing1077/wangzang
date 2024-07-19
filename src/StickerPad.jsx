@@ -51,7 +51,7 @@
 // }
 
 // export default StickerPad;
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import styles from "./StickerPad.module.css";
 import { getSticker } from "./Stickers.data";
 
@@ -59,7 +59,7 @@ function StickerPad() {
   const [stickers, setStickers] = useState([]);
   const [touchUsed, setTouchUsed] = useState(false);
 
-  const addSticker = (x, y) => {
+  const addSticker = useCallback((x, y) => {
     const stickerData = getSticker();
     const newSticker = {
       ...stickerData,
@@ -69,21 +69,21 @@ function StickerPad() {
     };
 
     setStickers((prevStickers) => [...prevStickers, newSticker]);
-  };
+  }, []);
 
-  const handleClick = (event) => {
+  const handleClick = useCallback((event) => {
     if (!touchUsed) {
       addSticker(event.clientX, event.clientY);
     }
     setTouchUsed(false);
-  };
+  }, [touchUsed, addSticker]);
 
-  const handleTouch = (event) => {
+  const handleTouch = useCallback((event) => {
     event.preventDefault();
     setTouchUsed(true);
     const touch = event.touches[0];
     addSticker(touch.clientX, touch.clientY);
-  };
+  }, [addSticker]);
 
   return (
     <>
