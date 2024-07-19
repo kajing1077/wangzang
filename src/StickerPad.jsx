@@ -51,32 +51,46 @@
 // }
 
 // export default StickerPad;
-import React from "react";
+import { useState } from "react";
 import styles from "./StickerPad.module.css";
 import { getSticker } from "./Stickers.data";
 
 function StickerPad() {
-  const [stickers, setStickers] = React.useState([]);
+  const [stickers, setStickers] = useState([]);
+  const [touchUsed, setTouchUsed] = useState(false);
 
-  const handleStickerAdd = (event) => {
+  const addSticker = (x, y) => {
     const stickerData = getSticker();
     const newSticker = {
       ...stickerData,
-      x: event.clientX || (event.touches && event.touches[0].clientX),
-      y: event.clientY || (event.touches && event.touches[0].clientY),
+      x,
+      y,
       id: crypto.randomUUID(),
     };
 
-    const nextStickers = [...stickers, newSticker];
-    setStickers(nextStickers);
+    setStickers((prevStickers) => [...prevStickers, newSticker]);
+  };
+
+  const handleClick = (event) => {
+    if (!touchUsed) {
+      addSticker(event.clientX, event.clientY);
+    }
+    setTouchUsed(false);
+  };
+
+  const handleTouch = (event) => {
+    event.preventDefault();
+    setTouchUsed(true);
+    const touch = event.touches[0];
+    addSticker(touch.clientX, touch.clientY);
   };
 
   return (
     <>
-      <button
+      <div
         className={styles.wrapper}
-        onClick={handleStickerAdd}
-        onTouchStart={handleStickerAdd}
+        onClick={handleClick}
+        onTouchStart={handleTouch}
       >
         {stickers.map((sticker) => (
           <img
@@ -92,12 +106,10 @@ function StickerPad() {
             }}
           />
         ))}
-      </button>
+      </div>
       <button
         className={styles.clear}
-        onClick={() => {
-          setStickers([]);
-        }}
+        onClick={() => setStickers([])}
       >
         clear
       </button>
