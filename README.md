@@ -4,4 +4,5 @@ You can stick wangzang stickers by clicking or touching the screen.
 
 Have fun!
 
-[LINK](https://kajing1077.github.io/wangzang/){: target="_blank"}
+[LINK](https://kajing1077.github.io/wangzang/)
+
